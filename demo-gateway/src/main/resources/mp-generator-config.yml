@@ -1,0 +1,16 @@
+author: Bruce
+dbType: mysql
+dbUrl: "jdbc:mysql://localhost:3306/spring-security?characterEncoding=utf8&serverTimezone=GMT%2B8"
+dbDriverName: "com.mysql.cj.jdbc.Driver"
+dbUsername: root
+dbPassword: root
+
+parentPackage: com.bruce.demo.gateway
+projectName: gateway
+#prefix: demo
+includes: ["gateway_route","gateway_route_param"]
+
+#outputDir:
+#usebtl: true
+#usevm: true
+useftl: true

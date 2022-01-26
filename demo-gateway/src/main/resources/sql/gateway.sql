@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 26/01/2022 15:20:44
+ Date: 26/01/2022 20:14:49
 */
 
 SET NAMES utf8mb4;
@@ -38,6 +38,7 @@ CREATE TABLE `gateway_route`  (
 -- ----------------------------
 -- Records of gateway_route
 -- ----------------------------
+INSERT INTO `gateway_route` VALUES (1, 'demo-server', 0, 'lb://demo-server', 'Y', 'admin', '2022-01-26 17:23:42', NULL, NULL, 'N');
 
 -- ----------------------------
 -- Table structure for gateway_route_param
@@ -62,6 +63,8 @@ CREATE TABLE `gateway_route_param`  (
 -- ----------------------------
 -- Records of gateway_route_param
 -- ----------------------------
+INSERT INTO `gateway_route_param` VALUES (1, 'demo-server', 'Path', 'Path', '/api/hi/**', 1, 'Y', 'admin', '2022-01-26 17:26:07', NULL, NULL, 'N');
+INSERT INTO `gateway_route_param` VALUES (2, 'demo-server', 'RewritePath', '/api/(?<segment>.*)', '/$\\{segment}', 2, 'Y', 'admin', '2022-01-26 17:26:32', NULL, NULL, 'N');
 
 -- ----------------------------
 -- Table structure for resource
