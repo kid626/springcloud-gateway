@@ -1,0 +1,11 @@
+server:
+  port: 8762
+
+spring:
+  application:
+    name: demo-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8760/eureka/

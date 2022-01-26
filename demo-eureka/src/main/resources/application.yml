@@ -1,0 +1,15 @@
+server:
+  port: 8760
+
+spring:
+  application:
+    name: demo-eurka
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

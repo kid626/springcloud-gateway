@@ -1,0 +1,27 @@
+server:
+  port: 8761
+
+#微服务名称
+spring:
+  application:
+    name: demo-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        #路径匹配
+        - id: demo-server
+          uri: lb://demo-server
+          predicates:
+            - Path=/api/hi/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - AddRequestHeader=X-Request-Foo, Bar
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8760/eureka/
