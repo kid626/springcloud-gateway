@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 26/01/2022 20:14:49
+ Date: 07/02/2022 13:55:33
 */
 
 SET NAMES utf8mb4;
@@ -63,8 +63,9 @@ CREATE TABLE `gateway_route_param`  (
 -- ----------------------------
 -- Records of gateway_route_param
 -- ----------------------------
-INSERT INTO `gateway_route_param` VALUES (1, 'demo-server', 'Path', 'Path', '/api/hi/**', 1, 'Y', 'admin', '2022-01-26 17:26:07', NULL, NULL, 'N');
-INSERT INTO `gateway_route_param` VALUES (2, 'demo-server', 'RewritePath', '/api/(?<segment>.*)', '/$\\{segment}', 2, 'Y', 'admin', '2022-01-26 17:26:32', NULL, NULL, 'N');
+INSERT INTO `gateway_route_param` VALUES (1, 'demo-server', 'Path', 'pattern', '/api/hi/**', 1, 'Y', 'admin', '2022-01-26 17:26:07', 'admin', '2022-01-26 17:26:07', 'N');
+INSERT INTO `gateway_route_param` VALUES (2, 'demo-server', 'RewritePath', 'regexp', '/api/(?<segment>.*)', 2, 'Y', 'admin', '2022-01-26 17:26:32', 'admin', '2022-01-26 17:26:32', 'N');
+INSERT INTO `gateway_route_param` VALUES (3, 'demo-server', 'RewritePath', 'replacement', '/$\\{segment}', 2, 'Y', 'admin', '2022-02-07 11:10:53', 'admin', '2022-02-07 11:10:53', 'N');
 
 -- ----------------------------
 -- Table structure for resource
@@ -87,7 +88,7 @@ CREATE TABLE `resource`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `is_delete` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of resource
@@ -110,7 +111,7 @@ CREATE TABLE `role`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of role
@@ -127,7 +128,7 @@ CREATE TABLE `role_resource`  (
   `role_id` bigint(0) NOT NULL,
   `resource_id` bigint(0) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of role_resource
@@ -153,7 +154,7 @@ CREATE TABLE `user`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user

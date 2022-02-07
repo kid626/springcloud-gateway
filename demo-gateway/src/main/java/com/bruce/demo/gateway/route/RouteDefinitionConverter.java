@@ -1,15 +1,19 @@
 package com.bruce.demo.gateway.route;
 
 import com.bruce.demo.gateway.model.dto.CustomRouteDefinitionDTO;
+import com.bruce.demo.gateway.model.dto.CustomRouteParamDTO;
 import com.bruce.demo.gateway.model.enums.RouteTypeEnum;
 import com.bruce.demo.gateway.model.po.GatewayRouteParam;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +35,7 @@ public class RouteDefinitionConverter {
         routeDefinition.setId(dto.getRouteId());
         routeDefinition.setOrder(dto.getRouteOrder());
         routeDefinition.setUri(URI.create(dto.getUri()));
-        List<GatewayRouteParam> routeParams = dto.getList();
+        List<CustomRouteParamDTO> routeParams = dto.getList();
         if (CollectionUtils.isNotEmpty(routeParams)) {
             List<PredicateDefinition> predicates = routeParams.stream()
                     .filter(params -> RouteTypeEnum.PREDICATE.getCode().equals(params.getType()))
@@ -47,20 +51,37 @@ public class RouteDefinitionConverter {
         return routeDefinition;
     }
 
-    public static PredicateDefinition convertToPredicateDefinition(GatewayRouteParam param) {
+    public static PredicateDefinition convertToPredicateDefinition(CustomRouteParamDTO param) {
         PredicateDefinition predicateDefinition = new PredicateDefinition();
-        // TODO name 和 key/value 对 一对多的情况
         predicateDefinition.setName(param.getParamName());
-        predicateDefinition.addArg(param.getParamKey(), param.getParamValue());
+        Map<String, String> args = param.getArgs();
+        if (!(args == null || args.isEmpty())) {
+            predicateDefinition.setArgs(args);
+        }
         return predicateDefinition;
     }
 
-    public static FilterDefinition convertToFilterDefinition(GatewayRouteParam param) {
+    public static FilterDefinition convertToFilterDefinition(CustomRouteParamDTO param) {
         FilterDefinition filterDefinition = new FilterDefinition();
-        // TODO name 和 key/value 对 一对多的情况
         filterDefinition.setName(param.getParamName());
-        filterDefinition.addArg(param.getParamKey(), param.getParamValue());
+        Map<String, String> args = param.getArgs();
+        if (!(args == null || args.isEmpty())) {
+            filterDefinition.setArgs(args);
+        }
         return filterDefinition;
+    }
+
+
+    public static CustomRouteParamDTO convertToCustomRouteParamDTO(List<GatewayRouteParam> list) {
+        GatewayRouteParam baseParam = list.get(0);
+        CustomRouteParamDTO dto = new CustomRouteParamDTO();
+        BeanUtils.copyProperties(baseParam, dto);
+        Map<String, String> args = new HashMap<>();
+        for (GatewayRouteParam gatewayRouteParam : list) {
+            args.put(gatewayRouteParam.getParamKey(), gatewayRouteParam.getParamValue());
+        }
+        dto.setArgs(args);
+        return dto;
     }
 
 }

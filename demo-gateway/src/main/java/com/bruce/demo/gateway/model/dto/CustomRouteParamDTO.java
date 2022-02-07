@@ -1,9 +1,8 @@
 package com.bruce.demo.gateway.model.dto;
 
-import com.bruce.demo.gateway.model.po.GatewayRoute;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @Copyright Copyright © 2022 fanzh . All rights reserved.
@@ -13,8 +12,14 @@ import java.util.List;
  * @Author fzh
  */
 @Data
-public class CustomRouteDefinitionDTO extends GatewayRoute {
+public class CustomRouteParamDTO {
 
-    private List<CustomRouteParamDTO> list;
+    private String routeId;
+
+    private String paramName;
+
+    private Integer type;
+
+    private Map<String, String> args;
 
 }
