@@ -37,3 +37,16 @@ mybatis-plus:
   mapper-locations: classpath:com/bruce/demo/gateway/sqlmap/auto/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+management:
+  endpoint:
+    caches:
+      enabled: true
+    prometheus:
+      enabled: true
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,gateway,caches,beans
