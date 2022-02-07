@@ -38,13 +38,22 @@ public class DynamicRouteDefinitionRepository implements RouteDefinitionReposito
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
-        // TODO 调用 api 接口来新增
-        return null;
+        return route.flatMap(
+                routeDefinition -> {
+                    gatewayRouteService.save(RouteDefinitionConverter.convertToDTO(routeDefinition));
+                    this.addCache(routeDefinition);
+                    return Mono.empty();
+                });
     }
 
     @Override
     public Mono<Void> delete(Mono<String> routeId) {
-        return null;
+        return routeId.flatMap(
+                id -> {
+                    gatewayRouteService.remove(id);
+                    this.removeCache(id);
+                    return Mono.empty();
+                });
     }
 
     @Override

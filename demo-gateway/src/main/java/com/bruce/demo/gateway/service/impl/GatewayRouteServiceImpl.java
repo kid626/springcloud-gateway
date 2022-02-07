@@ -1,6 +1,7 @@
 package com.bruce.demo.gateway.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.bruce.demo.gateway.mapper.GatewayRouteMapper;
 import com.bruce.demo.gateway.model.dto.CustomRouteDefinitionDTO;
 import com.bruce.demo.gateway.model.dto.CustomRouteParamDTO;
@@ -13,8 +14,10 @@ import com.bruce.demo.gateway.service.GatewayRouteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,8 +40,24 @@ public class GatewayRouteServiceImpl implements GatewayRouteService {
 
 
     @Override
-    public long save() {
-        return 0;
+    @Transactional(rollbackFor = Exception.class)
+    public long save(CustomRouteDefinitionDTO dto) {
+        // 新增网关-路由
+        Date now = new Date();
+        GatewayRoute gatewayRoute = new GatewayRoute();
+        BeanUtils.copyProperties(dto, gatewayRoute);
+        gatewayRoute.setCreateTime(now);
+        gatewayRoute.setCreateUser("admin");
+        gatewayRoute.setUpdateTime(now);
+        gatewayRoute.setUpdateUser("admin");
+        gatewayRoute.setIsEnable(YesOrNoEnum.YES.getCode());
+        gatewayRoute.setIsDelete(YesOrNoEnum.NO.getCode());
+        mapper.insert(gatewayRoute);
+        List<CustomRouteParamDTO> list = dto.getList();
+        List<GatewayRouteParam> gatewayRouteParamList = RouteDefinitionConverter.convertToGatewayRouteParamList(list);
+        gatewayRouteParamService.batchSave(gatewayRouteParamList);
+        // 批量新增参数
+        return gatewayRoute.getId();
     }
 
     @Override
@@ -65,5 +84,39 @@ public class GatewayRouteServiceImpl implements GatewayRouteService {
             result.add(dto);
         }
         return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void remove(String routeId) {
+        // 先删除参数列表
+        gatewayRouteParamService.removeByRouteId(routeId);
+        // 再删网关-路由表
+        UpdateWrapper<GatewayRoute> wrapper = new UpdateWrapper<>();
+        wrapper.lambda().eq(GatewayRoute::getIsDelete, YesOrNoEnum.NO.getCode())
+                .eq(GatewayRoute::getRouteId, routeId);
+        GatewayRoute gatewayRoute = new GatewayRoute();
+        gatewayRoute.setIsDelete(YesOrNoEnum.YES.getCode());
+        gatewayRoute.setUpdateUser("admin");
+        gatewayRoute.setUpdateTime(new Date());
+        mapper.update(gatewayRoute, wrapper);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(CustomRouteDefinitionDTO dto) {
+        // 更新网关-路由
+        GatewayRoute gatewayRoute = new GatewayRoute();
+        BeanUtils.copyProperties(dto, gatewayRoute);
+        gatewayRoute.setUpdateTime(new Date());
+        mapper.updateById(gatewayRoute);
+
+        // 采取先删后新增的方式
+        gatewayRouteParamService.removeByRouteId(dto.getRouteId());
+        List<CustomRouteParamDTO> list = dto.getList();
+        List<GatewayRouteParam> gatewayRouteParamList = RouteDefinitionConverter.convertToGatewayRouteParamList(list);
+
+        gatewayRouteParamService.batchSave(gatewayRouteParamList);
     }
 }

@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 07/02/2022 13:55:33
+ Date: 07/02/2022 15:21:03
 */
 
 SET NAMES utf8mb4;
@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `gateway_route`;
 CREATE TABLE `gateway_route`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `route_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由id',
   `route_order` int(0) NULL DEFAULT 0 COMMENT '路由顺序',
   `uri` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由路径',
@@ -45,7 +45,7 @@ INSERT INTO `gateway_route` VALUES (1, 'demo-server', 0, 'lb://demo-server', 'Y'
 -- ----------------------------
 DROP TABLE IF EXISTS `gateway_route_param`;
 CREATE TABLE `gateway_route_param`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `route_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由id',
   `param_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数名称',
   `param_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数key',

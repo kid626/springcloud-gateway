@@ -18,4 +18,16 @@ public interface GatewayRouteParamService {
      */
     List<GatewayRouteParam> getByRouteId(String routeId);
 
+    /**
+     * 根据路由主键删除
+     *
+     * @param routeId 路由主键
+     */
+    void removeByRouteId(String routeId);
+
+    /**
+     * 批量新增
+     */
+    void batchSave(List<GatewayRouteParam> list);
+
 }

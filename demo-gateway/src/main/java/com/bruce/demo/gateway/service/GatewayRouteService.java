@@ -13,11 +13,27 @@ import java.util.List;
  */
 public interface GatewayRouteService {
 
-    long save();
+    /**
+     * 新增一条路由规则
+     */
+    long save(CustomRouteDefinitionDTO dto);
 
     /**
      * 获取所有
      */
     List<CustomRouteDefinitionDTO> queryAll();
+
+
+    /**
+     * 删除路由规则
+     *
+     * @param routeId 路由规则id
+     */
+    void remove(String routeId);
+
+    /**
+     * 更新
+     */
+    void update(CustomRouteDefinitionDTO dto);
 
 }

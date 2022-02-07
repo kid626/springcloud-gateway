@@ -22,5 +22,13 @@
     <sql id="Base_Column_List">
         id, route_id, param_name, param_key, param_value, type, is_enable, create_user, create_time, update_user, update_time, is_delete
     </sql>
+    <insert id="insertBatch">
+        insert into gateway_route_param (route_id, param_name, param_key, param_value, type, is_enable, create_user, create_time, update_user, update_time, is_delete)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.routeId,jdbcType=VARCHAR}, #{item.paramName,jdbcType=VARCHAR}, #{item.paramKey,jdbcType=VARCHAR},
+             #{item.paramValue,jdbcType=VARCHAR}, #{item.type}, 'Y','admin', now(),'admin', now(), 'N')
+        </foreach>
+    </insert>
 
 </mapper>

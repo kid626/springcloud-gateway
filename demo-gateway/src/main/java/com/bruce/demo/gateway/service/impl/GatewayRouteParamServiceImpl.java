@@ -1,13 +1,16 @@
 package com.bruce.demo.gateway.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.bruce.demo.gateway.mapper.GatewayRouteParamMapper;
 import com.bruce.demo.gateway.model.enums.YesOrNoEnum;
 import com.bruce.demo.gateway.model.po.GatewayRouteParam;
 import com.bruce.demo.gateway.service.GatewayRouteParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,5 +33,23 @@ public class GatewayRouteParamServiceImpl implements GatewayRouteParamService {
                 .eq(GatewayRouteParam::getIsEnable, YesOrNoEnum.YES.getCode())
                 .eq(GatewayRouteParam::getRouteId, routeId);
         return mapper.selectList(wrapper);
+    }
+
+    @Override
+    public void removeByRouteId(String routeId) {
+        UpdateWrapper<GatewayRouteParam> wrapper = new UpdateWrapper<>();
+        wrapper.lambda().eq(GatewayRouteParam::getIsDelete, YesOrNoEnum.NO.getCode())
+                .eq(GatewayRouteParam::getRouteId, routeId);
+        GatewayRouteParam gatewayRouteParam = new GatewayRouteParam();
+        gatewayRouteParam.setIsDelete(YesOrNoEnum.YES.getCode());
+        gatewayRouteParam.setUpdateUser("admin");
+        gatewayRouteParam.setUpdateTime(new Date());
+        mapper.update(gatewayRouteParam, wrapper);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchSave(List<GatewayRouteParam> list) {
+        mapper.insertBatch(list);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,33 @@ public class RouteDefinitionConverter {
 
     public static CustomRouteDefinitionDTO convertToDTO(RouteDefinition routeDefinition) {
         CustomRouteDefinitionDTO dto = new CustomRouteDefinitionDTO();
+        dto.setRouteId(routeDefinition.getId());
+        dto.setRouteOrder(routeDefinition.getOrder());
+        dto.setUri(routeDefinition.getUri().toASCIIString());
+        List<FilterDefinition> filters = routeDefinition.getFilters();
+        List<PredicateDefinition> predicates = routeDefinition.getPredicates();
+        List<CustomRouteParamDTO> list = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(filters)) {
+            for (FilterDefinition filter : filters) {
+                CustomRouteParamDTO customRouteParamDTO = new CustomRouteParamDTO();
+                customRouteParamDTO.setRouteId(routeDefinition.getId());
+                customRouteParamDTO.setParamName(filter.getName());
+                customRouteParamDTO.setType(RouteTypeEnum.FILTER.getCode());
+                customRouteParamDTO.setArgs(filter.getArgs());
+                list.add(customRouteParamDTO);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(predicates)) {
+            for (PredicateDefinition predicate : predicates) {
+                CustomRouteParamDTO customRouteParamDTO = new CustomRouteParamDTO();
+                customRouteParamDTO.setRouteId(routeDefinition.getId());
+                customRouteParamDTO.setParamName(predicate.getName());
+                customRouteParamDTO.setType(RouteTypeEnum.PREDICATE.getCode());
+                customRouteParamDTO.setArgs(predicate.getArgs());
+                list.add(customRouteParamDTO);
+            }
+        }
+        dto.setList(list);
         return dto;
     }
 
@@ -82,6 +110,27 @@ public class RouteDefinitionConverter {
         }
         dto.setArgs(args);
         return dto;
+    }
+
+    public static List<GatewayRouteParam> convertToGatewayRouteParamList(List<CustomRouteParamDTO> list) {
+        List<GatewayRouteParam> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (CustomRouteParamDTO dto : list) {
+                Map<String, String> args = dto.getArgs();
+                if (!(args == null || args.isEmpty())) {
+                    for (String key : args.keySet()) {
+                        GatewayRouteParam gatewayRouteParam = new GatewayRouteParam();
+                        gatewayRouteParam.setType(dto.getType());
+                        gatewayRouteParam.setRouteId(dto.getRouteId());
+                        gatewayRouteParam.setParamName(dto.getParamName());
+                        gatewayRouteParam.setParamKey(key);
+                        gatewayRouteParam.setParamValue(args.get(key));
+                        result.add(gatewayRouteParam);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }
