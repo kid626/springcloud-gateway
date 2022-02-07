@@ -17,6 +17,8 @@ public class CustomRouteParamDTO {
     private String routeId;
 
     private String paramName;
+    private String paramKey;
+    private String paramValue;
 
     private Integer type;
 

@@ -100,13 +100,13 @@ public class RouteDefinitionConverter {
     }
 
 
-    public static CustomRouteParamDTO convertToCustomRouteParamDTO(List<GatewayRouteParam> list) {
-        GatewayRouteParam baseParam = list.get(0);
+    public static CustomRouteParamDTO convertToCustomRouteParamDTO(List<CustomRouteParamDTO> list) {
+        CustomRouteParamDTO baseParam = list.get(0);
         CustomRouteParamDTO dto = new CustomRouteParamDTO();
         BeanUtils.copyProperties(baseParam, dto);
-        Map<String, String> args = new HashMap<>();
-        for (GatewayRouteParam gatewayRouteParam : list) {
-            args.put(gatewayRouteParam.getParamKey(), gatewayRouteParam.getParamValue());
+        Map<String, String> args = new HashMap<>(2);
+        for (CustomRouteParamDTO customRouteParamDTO : list) {
+            args.put(customRouteParamDTO.getParamKey(), customRouteParamDTO.getParamValue());
         }
         dto.setArgs(args);
         return dto;

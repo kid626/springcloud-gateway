@@ -1,7 +1,10 @@
 package com.bruce.demo.gateway.mapper;
 
-import com.bruce.demo.gateway.model.po.GatewayRoute;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bruce.demo.gateway.model.dto.CustomRouteDefinitionDTO;
+import com.bruce.demo.gateway.model.po.GatewayRoute;
+
+import java.util.List;
 
 /**
  * @Copyright Copyright © 2022 Bruce . All rights reserved.
@@ -11,5 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Author Bruce
  */
 public interface GatewayRouteMapper extends BaseMapper<GatewayRoute> {
+
+    /**
+     * 查询全部
+     */
+    List<CustomRouteDefinitionDTO> queryAll();
 
 }

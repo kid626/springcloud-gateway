@@ -16,9 +16,47 @@
         <result column="is_delete" property="isDelete" />
     </resultMap>
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="CustomRouteDefinitionDTOMap" type="com.bruce.demo.gateway.model.dto.CustomRouteDefinitionDTO">
+        <id column="id" property="id" />
+        <result column="route_id" property="routeId" />
+        <result column="route_order" property="routeOrder" />
+        <result column="uri" property="uri" />
+        <result column="is_enable" property="isEnable" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <collection property="list" ofType="com.bruce.demo.gateway.model.dto.CustomRouteParamDTO">
+            <result column="routeId" property="routeId" jdbcType="VARCHAR" />
+            <result column="paramName" property="paramName" jdbcType="VARCHAR" />
+            <result column="paramKey" property="paramKey" jdbcType="VARCHAR" />
+            <result column="paramValue" property="paramValue" jdbcType="VARCHAR" />
+            <result column="type" property="type" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, route_id, route_order, uri, is_enable, create_user, create_time, update_user, update_time, is_delete
     </sql>
+    <select id="queryAll" resultMap="CustomRouteDefinitionDTOMap">
+        SELECT
+            gr.*,
+            gr.route_id as routeId,
+            grp.param_name as paramName,
+            grp.param_key as paramKey,
+            grp.param_value as paramValue,
+            grp.type as type
+        FROM
+            `gateway_route` AS gr
+            JOIN `gateway_route_param` AS grp ON gr.route_id = grp.route_id
+        WHERE
+            grp.is_delete = "N"
+            AND grp.is_enable = "Y"
+            AND gr.is_delete = "N"
+            AND gr.is_enable = "Y"
+    </select>
 
 </mapper>

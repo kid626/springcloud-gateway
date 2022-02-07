@@ -1,6 +1,5 @@
 package com.bruce.demo.gateway.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.bruce.demo.gateway.mapper.GatewayRouteMapper;
 import com.bruce.demo.gateway.model.dto.CustomRouteDefinitionDTO;
@@ -11,6 +10,7 @@ import com.bruce.demo.gateway.model.po.GatewayRouteParam;
 import com.bruce.demo.gateway.route.RouteDefinitionConverter;
 import com.bruce.demo.gateway.service.GatewayRouteParamService;
 import com.bruce.demo.gateway.service.GatewayRouteService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,28 +62,22 @@ public class GatewayRouteServiceImpl implements GatewayRouteService {
 
     @Override
     public List<CustomRouteDefinitionDTO> queryAll() {
-        // TODO 一个 sql 完成
-        QueryWrapper<GatewayRoute> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(GatewayRoute::getIsDelete, YesOrNoEnum.NO.getCode())
-                .eq(GatewayRoute::getIsEnable, YesOrNoEnum.YES.getCode());
-        List<GatewayRoute> list = mapper.selectList(wrapper);
-        List<CustomRouteDefinitionDTO> result = new ArrayList<>();
-        for (GatewayRoute gatewayRoute : list) {
-            CustomRouteDefinitionDTO dto = new CustomRouteDefinitionDTO();
-            BeanUtils.copyProperties(gatewayRoute, dto);
-            List<GatewayRouteParam> gatewayRouteParamList = gatewayRouteParamService.getByRouteId(gatewayRoute.getRouteId());
-            // 根据 name 合并
-            Map<String, List<GatewayRouteParam>> map = gatewayRouteParamList.stream().collect(Collectors.groupingBy(GatewayRouteParam::getParamName));
-            List<CustomRouteParamDTO> paramDTOList = new ArrayList<>();
-            for (String key : map.keySet()) {
-                List<GatewayRouteParam> valueList = map.get(key);
-                CustomRouteParamDTO customRouteParamDTO = RouteDefinitionConverter.convertToCustomRouteParamDTO(valueList);
-                paramDTOList.add(customRouteParamDTO);
+        List<CustomRouteDefinitionDTO> all = mapper.queryAll();
+        for (CustomRouteDefinitionDTO dto : all) {
+            List<CustomRouteParamDTO> list = dto.getList();
+            if (CollectionUtils.isNotEmpty(list)) {
+                // 根据 name 合并
+                Map<String, List<CustomRouteParamDTO>> map = list.stream().collect(Collectors.groupingBy(CustomRouteParamDTO::getParamName));
+                List<CustomRouteParamDTO> paramDTOList = new ArrayList<>();
+                for (String key : map.keySet()) {
+                    List<CustomRouteParamDTO> valueList = map.get(key);
+                    CustomRouteParamDTO customRouteParamDTO = RouteDefinitionConverter.convertToCustomRouteParamDTO(valueList);
+                    paramDTOList.add(customRouteParamDTO);
+                }
+                dto.setList(paramDTOList);
             }
-            dto.setList(paramDTOList);
-            result.add(dto);
         }
-        return result;
+        return all;
     }
 
     @Override
